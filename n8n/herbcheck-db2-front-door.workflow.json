@@ -1,0 +1,85 @@
+{
+  "name": "Uday Shankar HerbCheck x Db2 (front door)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "herbcheck-db2",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "herbcheck-db2-webhook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.HERBCHECK_DB2_API_URL || 'http://localhost:8000' }}/api/check",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ medications: $json.body.medications, herbs: $json.body.herbs }) }}",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "a2",
+      "name": "HerbCheck Db2 API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        0
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "a3",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HerbCheck Db2 API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HerbCheck Db2 API": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

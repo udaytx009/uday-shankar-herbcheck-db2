@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HerbCheck on IBM Db2</title>
+<style>
+  :root{
+    --ink:#1c1c2e; --indigo:#202044; --purple:#4B3BD0; --orange:#E78524; --paper:#F6F5F1; --white:#fff;
+    --muted:#5f6178; --line:#d9d7e3; --soft:#eeedf5;
+    --high:#b42318; --mod:#a15c07; --low:#2f6f4f;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);
+       font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  /* top bar */
+  .top{background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:space-between;
+       padding:0 24px;height:52px;flex:none}
+  .brand{font-weight:700;font-size:18px;letter-spacing:.2px}
+  .brand span{font-weight:400;color:#c9c8e6}
+  .conn{font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#c9c8e6;display:flex;align-items:center;gap:8px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#7a7a92}
+  .dot.ok{background:#4cc38a}.dot.bad{background:#e5484d}
+  /* layout */
+  .app{flex:1;display:grid;grid-template-columns:380px 1fr;min-height:0}
+  aside{background:var(--white);border-right:1px solid var(--line);padding:24px;overflow:auto}
+  main{padding:24px 32px 32px;overflow:auto}
+  @media(max-width:900px){body{display:block;height:auto}.app{display:block}aside,main{overflow:visible}aside{border-right:0;border-bottom:1px solid var(--line);padding:18px 16px}main{padding:20px 16px}.top{height:auto;min-height:52px;padding:10px 16px;flex-wrap:wrap;gap:4px}.strip{padding:8px 16px}.summary{gap:16px 24px}}
+  .tw{overflow-x:auto}
+  h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 14px;font-weight:700}
+  label{display:block;font-weight:600;margin:0 0 4px}
+  .hint{color:var(--muted);font-size:12.5px;margin:0 0 6px}
+  input[type=text]{width:100%;padding:10px 11px;border:1px solid #bdbad0;border-radius:4px;font:inherit;background:#fff;color:var(--ink)}
+  input[type=text]:focus{outline:2px solid var(--purple);outline-offset:0;border-color:var(--purple)}
+  .field{margin-bottom:16px}
+  button.go{width:100%;background:var(--purple);color:#fff;border:0;border-radius:4px;padding:11px 14px;font:600 15px inherit;cursor:pointer}
+  button.go:hover{background:#3b2db0}
+  button.go:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+  .examples{margin:18px 0 0;padding:0;list-style:none;font-size:13.5px}
+  .examples li{padding:7px 0;border-top:1px solid var(--soft)}
+  .examples a{color:var(--purple);cursor:pointer;text-decoration:none}
+  .examples a:hover{text-decoration:underline}
+  .notice{margin-top:22px;border-left:3px solid var(--orange);background:#fbf7f1;padding:10px 12px;font-size:13px;color:#5b4a2e}
+  /* results */
+  .empty{max-width:640px;color:var(--muted)}
+  .empty ol{padding-left:18px}.empty li{margin:6px 0}
+  .summary{display:flex;flex-wrap:wrap;gap:28px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:18px}
+  .summary .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .summary .v{font-size:20px;font-weight:700}
+  .v.delivered{color:var(--low)}.v.needs_review{color:var(--mod)}
+  .a-high{color:var(--high)}.a-moderate{color:var(--mod)}.a-low{color:var(--low)}.a-none{color:var(--muted)}
+  .reasons{margin:0 0 18px;padding:10px 14px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--mod)}
+  .reasons ul{margin:4px 0 0;padding-left:18px}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line)}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;padding:9px 12px;background:#faf9fc;border-bottom:1px solid var(--line)}
+  td{padding:11px 12px;border-bottom:1px solid var(--soft);vertical-align:top}
+  tr.f td:first-child{border-left:4px solid var(--line)}
+  tr.f.high td:first-child{border-left-color:var(--high)}
+  tr.f.moderate td:first-child{border-left-color:var(--orange)}
+  tr.f.low td:first-child{border-left-color:var(--low)}
+  td.att{font-weight:700;text-transform:capitalize;white-space:nowrap}
+  .sub{color:var(--muted);font-size:13px}
+  .passage{margin-top:8px;padding:8px 10px;background:var(--soft);font-size:13px;color:#34345a}
+  .sec{margin-top:26px}
+  .sugg a{color:var(--purple);cursor:pointer;text-decoration:underline}
+  pre.expl{white-space:pre-wrap;font:inherit;margin:0;background:#fff;border:1px solid var(--line);padding:12px 14px}
+  .disc{color:var(--muted);font-size:12.5px;margin-top:18px}
+  td.mono,th.r,td.r{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+  td.r{text-align:right;white-space:nowrap}th.r{text-align:right}
+  /* status strip */
+  .strip{flex:none;background:#fff;border-top:1px solid var(--line);padding:7px 24px;font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand">HerbCheck <span>on IBM Db2</span></div>
+  <div class="conn"><span class="dot" id="dot"></span><span id="conn">connecting to Db2</span></div>
+</div>
+
+<div class="app">
+  <aside>
+    <h2>Check a combination</h2>
+    <form id="form" autocomplete="off">
+      <div class="field">
+        <label for="meds">Medications</label>
+        <p class="hint">Comma separated, up to 6</p>
+        <input id="meds" type="text" value="warfarin, sertraline">
+      </div>
+      <div class="field">
+        <label for="herbs">Herbs</label>
+        <p class="hint">Comma separated, up to 5</p>
+        <input id="herbs" type="text" value="ginkgo, st john's wort">
+      </div>
+      <button class="go" type="submit">Check interactions</button>
+    </form>
+    <ul class="examples">
+      <li><a data-m="sertraline" data-h="st john's wort">sertraline + St John's wort</a> <span class="sub">high attention</span></li>
+      <li><a data-m="warfarin" data-h="ginkgo">warfarin + ginkgo</a> <span class="sub">weaker evidence, goes to review</span></li>
+      <li><a data-m="warfarin" data-h="tumeric">warfarin + tumeric</a> <span class="sub">misspelling, vector suggestion</span></li>
+      <li><a data-m="metformin" data-h="ashwaghanda">metformin + ashwaghanda</a> <span class="sub">misspelling</span></li>
+      <li><a data-m="atorvastatin" data-h="valerian">atorvastatin + valerian</a> <span class="sub">no rule found</span></li>
+    </ul>
+    <div class="notice"><b>Educational reference only.</b> Not medical advice. The data set is an unreviewed starter. "Nothing found" never means "safe". Ask a pharmacist.</div>
+  </aside>
+
+  <main id="out" aria-live="polite">
+    <div class="empty">
+      <h2>How a check runs</h2>
+      <ol>
+        <li>Names are matched in Db2 by SQL; unknown names get a closest-match suggestion from a Db2 <code>VECTOR_DISTANCE</code> query.</li>
+        <li>One SQL join finds every rule of each herb that applies to your medications' drug classes.</li>
+        <li>LangChain retrieves supporting evidence through the Db2 vector store (<code>DB2VS</code>).</li>
+        <li>A confidence gate sends weak evidence to review. Every check is logged in Db2 as counts and a digest, never raw names.</li>
+      </ol>
+    </div>
+  </main>
+</div>
+
+<div class="strip" id="strip">Db2: connecting...</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const list = v => v.split(',').map(x => x.trim()).filter(Boolean);
+const STAGES = {
+  normalize: ['Normalize input', 'clean and de-duplicate names (app)'],
+  resolve_db2: ['Resolve names', 'SQL lookup + VECTOR_DISTANCE suggestions'],
+  interactions_db2_sql: ['Find interactions', 'SQL join across 4 tables'],
+  evidence_db2_vector: ['Retrieve evidence', 'LangChain DB2VS similarity search'],
+  gate: ['Confidence gate', 'rules in app'],
+  explain: ['Explain', 'template (or optional LLM)'],
+  audit_db2: ['Audit', 'INSERT into CHECK_LOG']
+};
+
+async function stats(){
+  try{
+    const r = await fetch('/api/stats'); const s = await r.json();
+    if(!r.ok) throw new Error(s.detail || r.status);
+    $('#dot').className = 'dot ok';
+    $('#conn').textContent = s.db2_version + ' connected';
+    $('#strip').textContent = `${s.herbs} herbs · ${s.drugs} drugs · ${s.rules} rules · ${s.checks_logged} checks audited in Db2 · reference data v0.1.0-starter (unreviewed)`;
+  }catch(e){ $('#dot').className = 'dot bad'; $('#conn').textContent = 'Db2 not reachable'; $('#strip').textContent = 'Db2 error: ' + e.message; }
+}
+
+async function check(){
+  const body = {medications: list($('#meds').value), herbs: list($('#herbs').value)};
+  $('#out').innerHTML = '<p class="sub">Checking in Db2...</p>';
+  const r = await fetch('/api/check', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  const d = await r.json();
+  if(!r.ok){ $('#out').innerHTML = `<div class="reasons"><b>Could not check.</b> ${esc(d.detail || r.status)}</div>`; return; }
+  render(d); stats();
+}
+
+function render(d){
+  const total = Object.values(d.db2.timings_ms).reduce((a,b)=>a+b,0).toFixed(0);
+  let h = `<div class="summary">
+    <div><div class="k">Result</div><div class="v ${d.status}">${d.status === 'delivered' ? 'Delivered' : 'Needs review'}</div></div>
+    <div><div class="k">Highest attention</div><div class="v a-${d.max_attention}">${d.max_attention === 'none' ? 'None found' : esc(d.max_attention)}</div></div>
+    <div><div class="k">Lowest confidence</div><div class="v">${d.min_confidence === null ? '–' : d.min_confidence}</div></div>
+    <div><div class="k">Findings</div><div class="v">${d.findings.length}</div></div>
+    <div><div class="k">Pipeline time</div><div class="v">${total} ms</div></div>
+  </div>`;
+
+  if(d.reasons.length) h += `<div class="reasons"><b>Why this needs review</b><ul>${d.reasons.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+
+  const sug = [...d.unrecognized.herbs.map(u=>({...u,k:'herb'})), ...d.unrecognized.drugs.map(u=>({...u,k:'med'}))];
+  if(sug.length){
+    h += '<div class="sugg reasons">' + sug.map(u => u.suggestions.length
+      ? `<div><b>${esc(u.input)}</b> is not in the reference set. Closest match found by Db2 vector search: ` +
+        u.suggestions.map(s=>`<a data-k="${u.k}" data-from="${esc(u.input)}" data-to="${esc(s.name)}">${esc(s.name)}</a> <span class="sub">(distance ${s.distance})</span>`).join(', ') +
+        `. Click to use it, then check again.</div>`
+      : `<div><b>${esc(u.input)}</b> is not in the reference set and has no close match.</div>`).join('') + '</div>';
+  }
+
+  if(d.findings.length){
+    h += `<div class="tw"><table><thead><tr><th>Herb</th><th>Medication</th><th>Attention</th><th>Evidence</th><th class="r">Conf.</th></tr></thead><tbody>`;
+    d.findings.forEach(f => {
+      h += `<tr class="f ${f.attention}"><td><b>${esc(f.herb)}</b></td><td>${esc(f.drug)}<div class="sub">${f.matched_classes.map(esc).join(', ')}</div></td>
+        <td class="att a-${f.attention}">${f.attention}</td><td>${esc(f.evidence_type)}</td><td class="r">${f.confidence}</td></tr>
+        <tr><td colspan="5">${esc(f.summary)}<div class="sub">Mechanism: ${esc(f.mechanism)}</div>
+        ${f.evidence_passages.map(p=>`<div class="passage"><span class="sub">Db2 vector retrieval, distance ${p.distance}:</span> ${esc(p.text)}</div>`).join('')}</td></tr>`;
+    });
+    h += '</tbody></table></div>';
+  } else if(d.status === 'delivered') {
+    h += '<div class="reasons">No interaction found in this reference set. That is not evidence that the combination is safe.</div>';
+  }
+
+  if(d.explanation) h += `<div class="sec"><h2>Explanation <span class="sub" style="text-transform:none;letter-spacing:0">(${esc(d.explained_by)})</span></h2><pre class="expl">${esc(d.explanation)}</pre></div>`;
+
+  h += `<div class="sec"><h2>What Db2 did</h2><div class="tw"><table><thead><tr><th>Stage</th><th>Where</th><th class="r">ms</th></tr></thead><tbody>` +
+    Object.entries(d.db2.timings_ms).map(([k,v]) => { const s = STAGES[k] || [k,'']; return `<tr><td>${esc(s[0])}</td><td class="sub">${esc(s[1])}</td><td class="r">${v}</td></tr>`; }).join('') +
+    `</tbody></table></div><div class="sub" style="margin-top:6px">${esc(d.db2.version)} · embeddings: ${esc(d.db2.embeddings)} · audit row written: ${d.db2.audit_logged ? 'yes' : 'no'}</div></div>`;
+  h += `<p class="disc">${esc(d.disclaimer)}</p>`;
+  $('#out').innerHTML = h;
+}
+
+$('#form').addEventListener('submit', e => { e.preventDefault(); check(); });
+document.addEventListener('click', e => {
+  const ex = e.target.closest('.examples a');
+  if(ex){ $('#meds').value = ex.dataset.m; $('#herbs').value = ex.dataset.h; check(); }
+  const a = e.target.closest('.sugg a');
+  if(a){ const id = a.dataset.k === 'herb' ? '#herbs' : '#meds';
+    $(id).value = list($(id).value).map(x => x.toLowerCase()===a.dataset.from.toLowerCase() ? a.dataset.to : x).join(', '); }
+});
+stats();
+</script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+{
+  "version": "0.1.0-starter",
+  "review_status": "UNREVIEWED starter summary of widely documented interactions. Requires pharmacist/clinical review before any real-world use. Reference only; not medical advice.",
+  "classes": {
+    "anticoagulant": ["warfarin","coumadin","apixaban","rivaroxaban","dabigatran","edoxaban","heparin","enoxaparin","fondaparinux"],
+    "antiplatelet": ["aspirin","clopidogrel","prasugrel","ticagrelor","dipyridamole","cilostazol"],
+    "nsaid": ["ibuprofen","naproxen","diclofenac","celecoxib","ketorolac","meloxicam","indomethacin","etodolac"],
+    "serotonergic": ["sertraline","fluoxetine","paroxetine","citalopram","escitalopram","fluvoxamine","venlafaxine","duloxetine","desvenlafaxine","trazodone","mirtazapine","tramadol","sumatriptan","rizatriptan","zolmitriptan","linezolid","buspirone"],
+    "maoi": ["phenelzine","tranylcypromine","selegiline","isocarboxazid","moclobemide"],
+    "sedative": ["alprazolam","lorazepam","diazepam","clonazepam","temazepam","zolpidem","eszopiclone","phenobarbital","gabapentin","pregabalin","oxycodone","hydrocodone","morphine","codeine","fentanyl","methadone","baclofen","cyclobenzaprine"],
+    "antidiabetic": ["metformin","glipizide","glyburide","glimepiride","insulin","pioglitazone","sitagliptin","linagliptin","empagliflozin","dapagliflozin","canagliflozin","liraglutide","semaglutide","repaglinide"],
+    "immunosuppressant": ["cyclosporine","tacrolimus","mycophenolate","sirolimus","everolimus","azathioprine","methotrexate"],
+    "digoxin": ["digoxin"],
+    "diuretic": ["furosemide","hydrochlorothiazide","chlorthalidone","bumetanide","torsemide","spironolactone"],
+    "antihypertensive": ["lisinopril","enalapril","ramipril","losartan","valsartan","olmesartan","amlodipine","nifedipine","diltiazem","verapamil","metoprolol","atenolol","propranolol","carvedilol","nadolol","clonidine","hydralazine"],
+    "antiretroviral": ["ritonavir","saquinavir","indinavir","atazanavir","darunavir","efavirenz","nevirapine","lopinavir"],
+    "contraceptive": ["ethinyl estradiol","norethindrone","levonorgestrel","norgestimate","drospirenone","desogestrel","estradiol"],
+    "statin": ["atorvastatin","simvastatin","lovastatin","rosuvastatin","pravastatin"],
+    "corticosteroid": ["prednisone","prednisolone","dexamethasone","hydrocortisone","methylprednisolone"],
+    "thyroid": ["levothyroxine","liothyronine"],
+    "stimulant": ["amphetamine","dextroamphetamine","methylphenidate","pseudoephedrine","phenylephrine","caffeine"],
+    "hepatotoxic": ["acetaminophen","methotrexate","isoniazid","ketoconazole","amiodarone","valproic acid","leflunomide"],
+    "antiepileptic": ["phenytoin","carbamazepine","valproic acid","lamotrigine","levetiracetam","topiramate"],
+    "cyp3a4_substrate": ["cyclosporine","tacrolimus","simvastatin","atorvastatin","midazolam","alprazolam","amlodipine","nifedipine","sildenafil","tadalafil","buspirone"],
+    "antidepressant_other": ["bupropion","amitriptyline","nortriptyline","imipramine","clomipramine"]
+  },
+  "herbs": {
+    "st. john's wort": {
+      "aliases": ["st johns wort","st john's wort","hypericum","hypericum perforatum"],
+      "rules": [
+        {"classes":["serotonergic","maoi"],"attention":"high","evidence":"case reports","summary":"Additive serotonergic effect; risk of serotonin syndrome.","mechanism":"Serotonin reuptake inhibition."},
+        {"classes":["anticoagulant","immunosuppressant","antiretroviral","contraceptive","digoxin","cyp3a4_substrate","statin","antiepileptic"],"attention":"high","evidence":"pharmacokinetic studies","summary":"Can lower blood levels and effect of the drug, with documented treatment failures (e.g. transplant rejection, breakthrough bleeding, reduced INR).","mechanism":"Induces CYP3A4 and P-glycoprotein."}
+      ]
+    },
+    "ginkgo": {
+      "aliases": ["ginkgo biloba","gingko"],
+      "rules": [
+        {"classes":["anticoagulant","antiplatelet","nsaid"],"attention":"moderate","evidence":"case reports; mixed trials","summary":"Possible increased bleeding risk.","mechanism":"Platelet-activating-factor antagonism."},
+        {"classes":["antiepileptic"],"attention":"moderate","evidence":"case reports","summary":"May lower seizure threshold or reduce anticonvulsant effect.","mechanism":"Ginkgotoxin; possible CYP induction."}
+      ]
+    },
+    "garlic": {
+      "aliases": ["garlic supplement","allium sativum","garlic extract"],
+      "rules": [
+        {"classes":["anticoagulant","antiplatelet"],"attention":"moderate","evidence":"case reports; theoretical","summary":"Possible increased bleeding risk at supplement doses.","mechanism":"Antiplatelet activity (ajoene)."},
+        {"classes":["antiretroviral"],"attention":"moderate","evidence":"pharmacokinetic study","summary":"Garlic supplements lowered saquinavir levels in a small study.","mechanism":"Possible CYP3A4/P-gp induction."}
+      ]
+    },
+    "ginseng": {
+      "aliases": ["panax ginseng","asian ginseng","korean ginseng","american ginseng","panax quinquefolius"],
+      "rules": [
+        {"classes":["anticoagulant"],"attention":"moderate","evidence":"case reports; small trials","summary":"May reduce warfarin effect (lower INR).","mechanism":"Uncertain."},
+        {"classes":["antidiabetic"],"attention":"moderate","evidence":"clinical studies","summary":"Additive blood-sugar lowering; hypoglycemia possible.","mechanism":"Glucose-lowering ginsenosides."},
+        {"classes":["maoi","stimulant"],"attention":"moderate","evidence":"case reports","summary":"Reports of agitation, insomnia, or mania with MAOIs or stimulants.","mechanism":"CNS stimulation."}
+      ]
+    },
+    "kava": {
+      "aliases": ["kava kava","piper methysticum"],
+      "rules": [
+        {"classes":["sedative"],"attention":"high","evidence":"case reports","summary":"Additive sedation and CNS depression.","mechanism":"GABAergic activity."},
+        {"classes":["hepatotoxic"],"attention":"high","evidence":"regulatory warnings; case reports","summary":"Kava has been linked to liver injury; combining with liver-toxic drugs raises concern.","mechanism":"Hepatotoxicity."}
+      ]
+    },
+    "valerian": {
+      "aliases": ["valeriana officinalis","valerian root"],
+      "rules": [
+        {"classes":["sedative"],"attention":"moderate","evidence":"theoretical; limited trials","summary":"Possible additive drowsiness.","mechanism":"GABAergic activity."}
+      ]
+    },
+    "licorice": {
+      "aliases": ["liquorice","glycyrrhiza","glycyrrhiza glabra","licorice root","deglycyrrhizinated licorice"],
+      "rules": [
+        {"classes":["diuretic","digoxin"],"attention":"high","evidence":"clinical reports","summary":"Can cause low potassium; raises risk of arrhythmia and digoxin toxicity.","mechanism":"Glycyrrhizin mineralocorticoid-like effect."},
+        {"classes":["antihypertensive"],"attention":"moderate","evidence":"clinical reports","summary":"Can raise blood pressure and blunt antihypertensive effect.","mechanism":"Sodium and water retention."},
+        {"classes":["corticosteroid"],"attention":"moderate","evidence":"pharmacokinetic reports","summary":"May increase corticosteroid exposure and potassium loss.","mechanism":"Inhibits 11β-HSD2."}
+      ]
+    },
+    "turmeric": {
+      "aliases": ["curcumin","curcuma longa","turmeric extract"],
+      "rules": [
+        {"classes":["anticoagulant","antiplatelet"],"attention":"low","evidence":"theoretical; in vitro","summary":"Possible small increase in bleeding tendency at supplement doses.","mechanism":"Antiplatelet effect."},
+        {"classes":["antidiabetic"],"attention":"low","evidence":"limited trials","summary":"May add to blood-sugar lowering.","mechanism":"Insulin sensitization."}
+      ]
+    },
+    "echinacea": {
+      "aliases": ["echinacea purpurea"],
+      "rules": [
+        {"classes":["immunosuppressant"],"attention":"moderate","evidence":"theoretical","summary":"Immune stimulation could oppose immunosuppressant therapy.","mechanism":"Immunostimulation."},
+        {"classes":["hepatotoxic"],"attention":"low","evidence":"theoretical","summary":"Long-term use has raised liver concerns with hepatotoxic drugs.","mechanism":"Unclear."}
+      ]
+    },
+    "goldenseal": {
+      "aliases": ["hydrastis canadensis"],
+      "rules": [
+        {"classes":["cyp3a4_substrate","immunosuppressant"],"attention":"moderate","evidence":"pharmacokinetic studies","summary":"May raise levels of drugs cleared by CYP3A4/CYP2D6.","mechanism":"Berberine/hydrastine CYP inhibition."}
+      ]
+    },
+    "berberine": {
+      "aliases": ["berberis","barberry","oregon grape"],
+      "rules": [
+        {"classes":["immunosuppressant","cyp3a4_substrate"],"attention":"moderate","evidence":"pharmacokinetic studies","summary":"Raised cyclosporine levels reported.","mechanism":"CYP3A4 / P-gp inhibition."},
+        {"classes":["antidiabetic"],"attention":"moderate","evidence":"clinical studies","summary":"Additive glucose lowering; hypoglycemia possible.","mechanism":"AMPK activation."}
+      ]
+    },
+    "ashwagandha": {
+      "aliases": ["withania somnifera","indian ginseng"],
+      "rules": [
+        {"classes":["sedative"],"attention":"low","evidence":"theoretical; limited trials","summary":"Possible additive sedation.","mechanism":"GABAergic activity."},
+        {"classes":["thyroid"],"attention":"moderate","evidence":"clinical studies","summary":"May raise thyroid hormone levels; could add to thyroid medication.","mechanism":"Stimulates thyroid hormone synthesis."},
+        {"classes":["immunosuppressant"],"attention":"low","evidence":"theoretical","summary":"Immune stimulation could oppose immunosuppressants.","mechanism":"Immunomodulation."},
+        {"classes":["antidiabetic"],"attention":"low","evidence":"limited trials","summary":"May add to blood-sugar lowering.","mechanism":"Unclear."}
+      ]
+    },
+    "ginger": {
+      "aliases": ["zingiber officinale","ginger root"],
+      "rules": [
+        {"classes":["anticoagulant","antiplatelet"],"attention":"low","evidence":"theoretical; mixed trials","summary":"High-dose supplements might add to bleeding tendency.","mechanism":"Thromboxane synthetase inhibition."}
+      ]
+    },
+    "green tea": {
+      "aliases": ["green tea extract","camellia sinensis","egcg"],
+      "rules": [
+        {"classes":["anticoagulant"],"attention":"low","evidence":"case reports","summary":"Vitamin K content may reduce warfarin effect.","mechanism":"Vitamin K."},
+        {"classes":["hepatotoxic"],"attention":"moderate","evidence":"case reports","summary":"Concentrated extracts have been linked to liver injury.","mechanism":"EGCG hepatotoxicity."},
+        {"classes":["stimulant"],"attention":"low","evidence":"theoretical","summary":"Caffeine adds to stimulant effects.","mechanism":"Caffeine."}
+      ]
+    },
+    "dong quai": {
+      "aliases": ["angelica sinensis","danggui"],
+      "rules": [
+        {"classes":["anticoagulant","antiplatelet"],"attention":"high","evidence":"case reports","summary":"Reported to raise INR and bleeding risk with warfarin.","mechanism":"Coumarin constituents."}
+      ]
+    },
+    "danshen": {
+      "aliases": ["salvia miltiorrhiza","red sage"],
+      "rules": [
+        {"classes":["anticoagulant","antiplatelet"],"attention":"high","evidence":"case reports","summary":"Reported to raise INR and bleeding with warfarin.","mechanism":"Reduced warfarin clearance; antiplatelet activity."}
+      ]
+    },
+    "ephedra": {
+      "aliases": ["ma huang","ephedra sinica"],
+      "rules": [
+        {"classes":["stimulant","maoi","antihypertensive"],"attention":"high","evidence":"regulatory warnings","summary":"Risk of dangerous blood pressure and heart rate increases; may oppose antihypertensives.","mechanism":"Sympathomimetic alkaloids."}
+      ]
+    },
+    "yohimbe": {
+      "aliases": ["yohimbine","pausinystalia yohimbe"],
+      "rules": [
+        {"classes":["antihypertensive","stimulant","antidepressant_other","maoi"],"attention":"moderate","evidence":"case reports","summary":"May raise blood pressure and oppose antihypertensives; additive stimulation.","mechanism":"Alpha-2 antagonism."}
+      ]
+    },
+    "bitter melon": {
+      "aliases": ["momordica charantia","bitter gourd"],
+      "rules": [
+        {"classes":["antidiabetic"],"attention":"moderate","evidence":"clinical studies","summary":"Additive glucose lowering; hypoglycemia possible.","mechanism":"Insulin-like compounds."}
+      ]
+    },
+    "fenugreek": {
+      "aliases": ["trigonella foenum-graecum"],
+      "rules": [
+        {"classes":["antidiabetic"],"attention":"moderate","evidence":"clinical studies","summary":"Additive glucose lowering.","mechanism":"Delayed carbohydrate absorption."},
+        {"classes":["anticoagulant"],"attention":"low","evidence":"case reports","summary":"Possible increased bleeding or INR change.","mechanism":"Coumarin-like constituents."}
+      ]
+    },
+    "black cohosh": {
+      "aliases": ["actaea racemosa","cimicifuga racemosa"],
+      "rules": [
+        {"classes":["hepatotoxic"],"attention":"low","evidence":"case reports","summary":"Rare liver injury reports; caution with liver-toxic drugs.","mechanism":"Unclear."}
+      ]
+    },
+    "saw palmetto": {
+      "aliases": ["serenoa repens"],
+      "rules": [
+        {"classes":["anticoagulant","antiplatelet"],"attention":"low","evidence":"case reports","summary":"Isolated reports of bleeding.","mechanism":"Unclear."},
+        {"classes":["contraceptive"],"attention":"low","evidence":"theoretical","summary":"Hormonal activity may interfere with hormone therapy.","mechanism":"Anti-androgenic/estrogenic effects."}
+      ]
+    },
+    "milk thistle": {
+      "aliases": ["silybum marianum","silymarin"],
+      "rules": [
+        {"classes":["antidiabetic"],"attention":"low","evidence":"limited trials","summary":"May modestly lower blood sugar.","mechanism":"Insulin sensitization."}
+      ]
+    },
+    "guggul": {
+      "aliases": ["commiphora mukul","guggulu"],
+      "rules": [
+        {"classes":["antihypertensive","statin"],"attention":"moderate","evidence":"pharmacokinetic study","summary":"Lowered propranolol and diltiazem levels in a small study.","mechanism":"CYP3A4 induction."}
+      ]
+    },
+    "holy basil": {
+      "aliases": ["tulsi","ocimum sanctum","ocimum tenuiflorum"],
+      "rules": [
+        {"classes":["antidiabetic"],"attention":"low","evidence":"limited trials","summary":"May add to blood-sugar lowering.","mechanism":"Unclear."},
+        {"classes":["anticoagulant","antiplatelet"],"attention":"low","evidence":"theoretical","summary":"Possible mild antiplatelet effect.","mechanism":"Eugenol content."}
+      ]
+    }
+  }
+}
