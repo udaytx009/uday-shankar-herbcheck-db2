@@ -94,6 +94,16 @@ n8n/        optional workflow
 - Synthetic/demo only: do not enter real patient data.
 - DB2VS applies metadata filters after the top-k search, so retrieval over-fetches (k=50) and filters by herb.
 
+## Screenshots
+
+<img width="1912" height="967" alt="image" src="https://github.com/user-attachments/assets/d853be26-6e36-4cfd-a186-8c53106388d0" />
+
+<img width="1917" height="952" alt="image" src="https://github.com/user-attachments/assets/84cdde70-78a8-4ae5-a97d-2d8935f40548" />
+
+<img width="1917" height="960" alt="image" src="https://github.com/user-attachments/assets/f25b23f6-3973-4177-ac0a-db46afd8534f" />
+
+<img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/b071a310-59a4-4b76-9e5f-5d5dd100c5ca" />
+
 ## Credits
 
 IBM Db2 Community Edition, `langchain-db2`, LangChain, FastAPI, optional FastEmbed (BAAI/bge-small-en-v1.5). MIT license.
