@@ -1,7 +1,7 @@
 # HerbCheck on IBM Db2
 
 **Herb–drug interaction reference that uses IBM Db2 12.1 as its knowledge base, vector store and audit trail, orchestrated with LangChain.**
-A research demo by Uday Shankar Bhowal (LearnHive Labs). Open source (MIT). Synthetic, **unreviewed** reference data.
+A research demo by Uday Shankar Bhowal. Open source (MIT). Synthetic, **unreviewed** reference data.
 
 > **Educational reference only. Not medical advice, not a medical device.** The reference set (`data/interaction_kb.json`, v0.1.0-starter) has not been pharmacist-reviewed. "No result" means "not found in this set", never "safe". No user data is stored.
 
